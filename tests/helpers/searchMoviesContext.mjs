@@ -1,11 +1,13 @@
 import { after, afterEach } from "node:test";
+import { createServer as createHttpServer } from "node:http";
 import React from "react";
 import TestRenderer, { act } from "react-test-renderer";
 import { MemoryRouter } from "react-router-dom";
 import { createServer } from "vite";
 
 const server = await createServer({
-  server: { middlewareMode: true },
+  // Attach HMR to an unlistened server so parallel test files do not bind a port.
+  server: { middlewareMode: true, hmr: { server: createHttpServer() } },
   appType: "custom",
 });
 const { SearchMoviesProvider, useSearchMoviesContext } =
